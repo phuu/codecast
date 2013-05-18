@@ -1,0 +1,16 @@
+<main class="wrapper landing">
+  <h2>Broadcast your code to teach or<br>collaborate on a problem.</h2>
+
+  <a class="btn btn-large"
+     href="/auth/github"
+     ng-hide="user.profile"
+     target="_self">
+    <i class="icon-github"></i> Sign in with Github
+  </a>
+
+  <a class="btn btn-large"
+     href="/start"
+     ng-show="user.profile">
+    Get started&hellip;
+  </a>
+</main>

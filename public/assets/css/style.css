@@ -1,0 +1,174 @@
+* { box-sizing: border-box; }
+
+[ng-cloak] { visibility: hidden; }
+
+/* Typography */
+
+@font-face {
+  font-family: 'codecast';
+  src:url('../fonts/codecast.eot');
+}
+@font-face {
+  font-family: 'codecast';
+  src: url(data:application/x-font-woff;charset=utf-8;base64,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) format('woff'),
+     url(data:application/x-font-ttf;charset=utf-8;base64,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) format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Use the following CSS code if you want to use data attributes for inserting your icons */
+[data-icon]:before {
+  font-family: 'codecast';
+  content: attr(data-icon);
+  speak: none;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Use the following CSS code if you want to have a class per icon */
+/*
+Instead of a list of all class selectors,
+you can use the generic selector below, but it's slower:
+[class*="icon-"] {
+*/
+.icon-github, .icon-bubble, .icon-pause {
+  font-family: 'codecast';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+.icon-github:before {
+  content: "\67";
+}
+.icon-bubble:before {
+  content: "\63";
+}
+.icon-pause:before {
+  content: "\70";
+}
+
+
+/* Reset */
+
+body {
+  margin: 0; padding: 0;
+  font: 14px/1.5 "Open Sans", sans-serif;
+  color: #555;
+  background: #fafafa;
+}
+
+a { color: #444; }
+a:hover { color: #333; }
+.bare { text-decoration: none; }
+.bare:hover { text-decoration: underline; }
+
+/* Buttons */
+
+.btn {
+  display: inline-block;
+  padding: 0.298em 0.667em;
+  margin-bottom: 0;
+  font-size: 1em;
+  line-height: 1.5;
+  color: #333333;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  border: 1px solid #cccccc;
+  text-decoration: none;
+  -webkit-border-radius: 0.298em;
+     -moz-border-radius: 0.298em;
+          border-radius: 0.298em;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active,
+.btn.active,
+.btn.disabled,
+.btn[disabled] {
+  color: #333333;
+  background-color: #e6e6e6;
+}
+
+.btn:active,
+.btn.active {
+  background-color: #cccccc \9;
+}
+
+.btn:first-child {
+  *margin-left: 0;
+}
+
+.btn:hover,
+.btn:focus {
+  color: #333333;
+  text-decoration: none;
+}
+
+.btn:focus {
+  outline: thin dotted #333;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+.btn.disabled,
+.btn[disabled] {
+  cursor: default;
+  opacity: 0.65;
+  -webkit-box-shadow: none;
+     -moz-box-shadow: none;
+          box-shadow: none;
+}
+
+.btn-large {
+  font-size: 1.5em;
+}
+
+/* Layout */
+
+header {
+  background: rgba(10,0,20,.05);
+  padding: 0.667em 1.5em;
+}
+header h1, header h2 {
+  margin: 0;
+  font-size: 1em;
+  display: inline-block;
+}
+header h2 {
+  float: right;
+  font-size: 0.667em;
+  text-transform: uppercase;
+  padding-top: 0.444em;
+}
+
+.wrapper {
+  max-width: 38.444em;
+  margin: 0 auto;
+}
+
+.wrapper.landing {
+  padding: 2.5em 1.5em;
+  text-align: center;
+}
+
+.landing h2,
+.landing h3 {
+  margin: 0 0 1em;
+  font-size: 1.5em;
+  font-weight: normal;
+}
+
+.landing small.msg {
+  display: block;
+  margin-bottom: 0.444em;
+}
