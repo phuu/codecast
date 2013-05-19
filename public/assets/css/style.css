@@ -201,6 +201,7 @@ header h2 {
   width: 25%;
   padding-bottom: 2.5em;
   background: rgba(0,0,0,.1);
+  overflow: scroll;
 }
 
 .chat ul {
@@ -214,7 +215,6 @@ header h2 {
 }
 
 .chat-input {
-  padding: 0.444em;
   background: rgba(0,0,0,.1);
   width: 25%;
   right: 0;
@@ -230,6 +230,10 @@ header h2 {
   padding: 0.298em 0.444em;
 }
 
+.chat-input input:focus {
+  outline: none;
+}
+
 .chat-input input {
   width: 80%;
 }
@@ -237,4 +241,8 @@ header h2 {
 .chat-input button {
   width: 20%;
   background: rgba(0,0,0,.1);
+  cursor: pointer;
+}
+.chat-input button:hover {
+  background: rgba(0,0,0,.2);
 }

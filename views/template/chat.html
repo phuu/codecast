@@ -7,7 +7,7 @@
       </li>
     </ul>
   </div>
-  <div class="chat-input">
+  <div class="chat-input" ng-show="user.profile">
     <form>
       <input ng-model="message"><button ng-click="send()">Send</button>
     </form>
