@@ -34,6 +34,7 @@
       };
       $scope.chat.newMessage(msg);
       socket.emit('chat:msg', msg);
+      $scope.message = '';
     };
   }]);
 

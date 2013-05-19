@@ -172,3 +172,45 @@ header h2 {
   display: block;
   margin-bottom: 0.444em;
 }
+
+.chat {
+  position: absolute;
+  top: 2.85em;
+  right: 0;
+  bottom: 0;
+  width: 25%;
+  padding-bottom: 2.5em;
+  background: rgba(0,0,0,.1);
+}
+
+.chat ul {
+  list-style: none;
+  padding: 0.444em;
+  margin: 0;
+}
+
+.chat-input {
+  padding: 0.444em;
+  background: rgba(0,0,0,.1);
+  width: 25%;
+  right: 0;
+  position: fixed;
+  bottom: 0;
+}
+
+.chat-input input,
+.chat-input button {
+  font: 14px/1.5 "Open Sans", sans-serif;
+  border: none;
+  margin: 0;
+  padding: 0.298em 0.444em;
+}
+
+.chat-input input {
+  width: 80%;
+}
+
+.chat-input button {
+  width: 20%;
+  background: rgba(0,0,0,.1);
+}
