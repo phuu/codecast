@@ -1,0 +1,6 @@
+<main class="wrapper">
+  <h2>Room: {{ room }}</h2>
+  <textarea ng-model="code" ng-change="change()"></textarea>
+</main>
+
+<div ng-include=" '/template/chat.html' "></div>

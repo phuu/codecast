@@ -1,0 +1,16 @@
+<div class="chat" ng-controller="ChatCtrl">
+  <div class="chat-messages-wrapper">
+    <ul>
+      <li ng-repeat="msg in chat.messages">
+        <strong>{{ msg.author }}</strong>
+        {{ msg.body }}
+      </li>
+    </ul>
+  </div>
+  <div>
+    <form>
+      <input ng-model="message">
+      <button ng-click="send()">Send</button>
+    </form>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 (function () {
 
-  var app = angular.module('codecast', ['ngResource']);
+  var app = angular.module('codecast', ['ngResource', 'code', 'room', 'chat']);
 
   /**
    * Configure
@@ -14,6 +14,14 @@
 
     // Routing
     $routeP
+      .when('/room/:room', {
+        controller: 'RoomCtrl',
+        templateUrl: '/template/room.html'
+      })
+      .when('/code/:room', {
+        controller: 'CodeCtrl',
+        templateUrl: '/template/code.html'
+      })
       .otherwise({
         templateUrl: '/template/landing.html'
       });
@@ -34,8 +42,13 @@
   app.controller('AuthCtrl', [
     '$scope',
     'User',
-  function ($scope, User) {
-    $scope.user = User.get();
+    '$location',
+  function ($scope, User, $location) {
+    $scope.user = User.get(function (user) {
+      if (!$scope.user.access_token) {
+        $location.path('/').replace();
+      }
+    });
   }]);
 
 }());

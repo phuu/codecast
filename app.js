@@ -9,6 +9,8 @@ var pkg            = require('./package.json'),
 var passport       = require('passport'),
     GitHubStrategy = require('passport-github').Strategy;
 
+var io             = require('socket.io');
+
 /**
  * Configuration
  * See: http://s.phuu.net/12PFa6J
@@ -65,6 +67,14 @@ passport.use(new GitHubStrategy({
  */
 
 var app = express();
+var server = http.createServer(app);
+io = io.listen(server);
+
+// io.enable('browser client minification');  // send minified client
+io.enable('browser client gzip');
+io.set('transports', [
+  'websocket'
+]);
 
 app.set('port', config.port);
 app.set('views', __dirname + '/views');
@@ -135,11 +145,44 @@ app.get('/*?', function (req, res) {
 });
 
 /**
+ * Realtime
+ */
+
+var chat = io.of('/chat');
+chat.on('connection',
+  function (socket) {
+    socket.on('join', function (room) {
+      socket.room = room;
+      socket.join(room);
+    });
+    socket.on('chat:msg', function (data) {
+      socket
+        .broadcast
+        .to(socket.room)
+        .emit('chat:msg', data);
+    });
+  });
+
+var code = io.of('/code');
+code.on('connection',
+  function (socket) {
+    socket.on('join', function (room) {
+      socket.room = room;
+      socket.join(room);
+    });
+    socket.on('code:change', function (data) {
+      socket
+        .broadcast
+        .to(socket.room)
+        .emit('code:change', data);
+    });
+  });
+
+/**
  * Gogogo
  */
 
-http
-  .createServer(app)
+server
   .listen(app.get('port'), function(){
     console.log("Server listening on port " + app.get('port'));
   });
