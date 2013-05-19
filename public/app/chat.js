@@ -18,8 +18,6 @@
     var socket = io.connect('/chat');
     socket.emit('join', $routeParams.room);
 
-
-
     socket.on('chat:msg', function (data) {
       console.log.apply(console, [].slice.call(arguments));
       $scope.$apply(function () {
@@ -32,8 +30,9 @@
         body: $scope.message,
         author: $scope.user.profile.username
       };
-      $scope.chat.newMessage(msg);
       socket.emit('chat:msg', msg);
+      msg.me = true;
+      $scope.chat.newMessage(msg);
       $scope.message = '';
     };
   }]);

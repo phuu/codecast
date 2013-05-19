@@ -1,6 +1,7 @@
-<main class="wrapper landing">
-  <h2>Room: {{ room }}</h2>
-  <textarea ng-model="code" disabled></textarea>
+<main class="wrapper code">
+  <ace mode="mode"
+       source="code"
+       read-only></ace>
 </main>
 
 <div ng-include=" '/template/chat.html' "></div>

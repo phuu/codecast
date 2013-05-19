@@ -1,6 +1,8 @@
 (function () {
 
-  var app = angular.module('codecast', ['ngResource', 'code', 'room', 'chat']);
+  var app = angular.module('codecast', [
+    'ngResource', 'code', 'room', 'chat', 'ace'
+  ]);
 
   /**
    * Configure

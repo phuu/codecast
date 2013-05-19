@@ -1,7 +1,7 @@
 <div class="chat" ng-controller="ChatCtrl">
   <div class="chat-messages-wrapper">
     <ul>
-      <li ng-repeat="msg in chat.messages">
+      <li ng-repeat="msg in chat.messages" ng-class="{ 'me': msg.me }">
         <strong>{{ msg.author }}</strong>
         {{ msg.body }}
       </li>

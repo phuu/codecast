@@ -1,6 +1,26 @@
-<main class="wrapper">
-  <h2>Room: {{ room }}</h2>
-  <textarea ng-model="code" ng-change="change()"></textarea>
+<main class="wrapper code">
+  <ace mode="mode"
+       source="code"
+       on-change="change()"
+       on-drag-enter="drag($event)"
+       on-drag-leave="drag($event)"
+       on-drop="drop($event)"></ace>
 </main>
+
+<select ng-model="mode" ng-change="change()" class="editor-mode">
+  <option value="text">Text</option>
+  <option value="markdown">Markdown</option>
+  <option disabled>&mdash;</option>
+  <option value="html">HTML</option>
+  <option value="css">CSS</option>
+  <option value="scss">SCSS</option>
+  <option value="javascript">Javascript</option>
+  <option value="coffee">Coffeescript</option>
+  <option value="json">JSON</option>
+  <option disabled>&mdash;</option>
+  <option value="php">PHP</option>
+  <option value="ruby">Ruby</option>
+  <option value="python">Python</option>
+</select>
 
 <div ng-include=" '/template/chat.html' "></div>
