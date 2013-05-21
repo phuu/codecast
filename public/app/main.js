@@ -1,7 +1,7 @@
 (function () {
 
   var app = angular.module('codecast', [
-    'ngResource', 'code', 'room', 'chat', 'ace'
+    'ngResource', 'code', 'room', 'chat', 'ace', 'uid'
   ]);
 
   /**
@@ -10,12 +10,22 @@
   app.config([
     '$routeProvider',
     '$locationProvider',
-  function ($routeP, $locationP) {
+    'uidProvider',
+  function ($routeP, $locationP, uidProvider) {
+    // Grab the uid generator. Not sure why this is neccesary.
+    // TODO investigate
+    var uid = uidProvider.$get();
+
     // Use nice URLs, no nasty hashbangs
     $locationP.html5Mode(true);
 
     // Routing
     $routeP
+      .when('/start', {
+        redirectTo: function (params, path, search) {
+          return '/code/' + uid.generate();
+        }
+      })
       .when('/room/:room', {
         controller: 'RoomCtrl',
         templateUrl: '/template/room.html'
