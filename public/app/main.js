@@ -23,14 +23,14 @@
     $routeP
       .when('/start', {
         redirectTo: function (params, path, search) {
-          return '/code/' + uid.generate();
+          return '/c/' + uid.generate();
         }
       })
-      .when('/room/:room', {
+      .when('/w/:room', {
         controller: 'RoomCtrl',
         templateUrl: '/template/room.html'
       })
-      .when('/code/:room', {
+      .when('/c/:room', {
         controller: 'CodeCtrl',
         templateUrl: '/template/code.html'
       })
