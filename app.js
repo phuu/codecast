@@ -11,6 +11,13 @@ var passport       = require('passport'),
 
 var io             = require('socket.io');
 
+var redis          = require("redis"),
+    redisClient    = redis.createClient(),
+    RedisStore     = require('connect-redis')(express);
+
+var redismemoriser = require('./lib/redismemoriser'),
+    uid            = require('./lib/uid')(Object.create(redismemoriser));
+
 /**
  * Configuration
  * See: http://s.phuu.net/12PFa6J
@@ -33,6 +40,11 @@ var config = {
         process.env.GITHUB_ID,
     secret: configFile.GITHUB_SECRET ||
             process.env.GITHUB_SECRET
+  },
+  session: {
+    secret: configFile.SESSION_SECRET ||
+            process.env.SESSION_SECRET ||
+            'keyboard fricking cat'
   }
 };
 
@@ -63,8 +75,16 @@ passport.use(new GitHubStrategy({
 ));
 
 /**
- * Configure express
+ * Configure & setup
  */
+
+// Database
+
+redisClient.on("error", function (err) {
+  console.log("Error " + err);
+});
+
+// Express
 
 var app = express();
 var server = http.createServer(app);
@@ -90,7 +110,12 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
-app.use(express.session({ secret: 'keyboard cat' }));
+app.use(express.session({
+  secret: config.session.secret,
+  store: new RedisStore({
+    client: redisClient
+  })
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -107,6 +132,14 @@ app.configure('production', function () {
     res.send('There was an error, sorry.');
   });
 });
+
+/**
+ * Utils
+ */
+
+var rk = function () {
+  return [].slice.call(arguments).join(':');
+};
 
 /**
  * Routes
@@ -126,6 +159,30 @@ app.get('/auth/github/callback',
 app.get('/api/user',
   function (req, res) {
     res.jsonp(req.user || {});
+  });
+
+app.post('/api/room',
+  function (req, res) {
+    uid.generate(4, function (err, id) {
+      if (err) return res.jsonp(500, err);
+      var data = {
+        id: id,
+        stats: {}
+      };
+      res.jsonp(data);
+      redisClient.set(rk('room', id), JSON.stringify(data));
+    });
+  });
+
+app.get('/api/room/:id',
+  function (req, res) {
+    redisClient.get(rk('room', req.params.id), function (err, reply) {
+      if (err) return res.jsonp(500, err);
+      var room;
+      try { room = JSON.parse(reply); }
+      catch(e) { return res.jsonp(500, { error: 'Malformed room data.'}); }
+      res.jsonp(room);
+    });
   });
 
 // Serve the templates

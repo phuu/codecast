@@ -6,7 +6,8 @@
     "npm": "1.2.x"
   },
   "scripts": {
-    "start": "node app"
+    "start": "node app",
+    "test": "tap ./test"
   },
   "dependencies": {
     "express": "~3.1.0",
@@ -19,8 +20,16 @@
     "grunt-contrib-cssmin": "~0.6.0",
     "passport": "~0.1.17",
     "passport-github": "~0.1.5",
-    "socket.io": "~0.9.14"
+    "socket.io": "~0.9.14",
+    "redis": "~0.8.3",
+    "connect-redis": "~1.4.5",
+    "hiredis": "~0.1.15",
+    "microtime": "~0.3.3"
   },
   "main": "app.js",
-  "devDependencies": {}
+  "devDependencies": {
+    "tap": "~0.4.3",
+    "async": "~0.2.8",
+    "underscore": "~1.4.4"
+  }
 }
