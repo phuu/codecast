@@ -31,6 +31,7 @@
         templateUrl: '/template/code.html'
       })
       .otherwise({
+        controller: 'LandingCtrl',
         templateUrl: '/template/landing.html'
       });
   }]);
@@ -60,6 +61,18 @@
         }
       });
     });
+  }]);
+
+  /**
+   * Landing Controller
+   */
+  app.controller('LandingCtrl', [
+    '$scope',
+    '$location',
+  function ($scope, $location) {
+    $scope.watch = function (code) {
+      $location.path('/w/' + code);
+    };
   }]);
 
 }());

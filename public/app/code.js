@@ -16,6 +16,11 @@
         mode: $scope.mode
       });
     };
+    socket.on('stat:change', function (stats) {
+      $scope.$apply(function () {
+        $scope.stats = stats;
+      });
+    });
   }]);
 
 }());

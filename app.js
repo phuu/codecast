@@ -141,6 +141,36 @@ var rk = function () {
   return [].slice.call(arguments).join(':');
 };
 
+var getRoom = function (id, cb) {
+  return redisClient.get(rk('room', id), function (err, reply) {
+    if (err) return cb(err);
+    if (!reply) return cb(null, null);
+    var room;
+    try { room = JSON.parse(reply); }
+    catch (e) { return cb(new Error('Malformed room data.')); }
+    return cb(null, room);
+  });
+};
+
+var setRoom = function (id, data, cb) {
+  return redisClient.set(rk('room', id), JSON.stringify(data));
+};
+
+var roomStat = function (id, stat, amount, cb) {
+  getRoom(id, function (err, room) {
+    console.log.apply(console, [].slice.call(arguments));
+    if (err) return cb(err);
+    if (!room) return cb(new Error("No such room."), null);
+    if (!room.stats) room.stats = {};
+    // -1 to compensate for the coder
+    if (typeof room.stats[stat] === "undefined") room.stats[stat] = -1;
+    room.stats[stat] += amount;
+    console.log('saving', room);
+    setRoom(id, room);
+    cb(null, room.stats);
+  });
+};
+
 /**
  * Routes
  */
@@ -170,17 +200,14 @@ app.post('/api/room',
         stats: {}
       };
       res.jsonp(data);
-      redisClient.set(rk('room', id), JSON.stringify(data));
+      setRoom(id, data);
     });
   });
 
 app.get('/api/room/:id',
   function (req, res) {
-    redisClient.get(rk('room', req.params.id), function (err, reply) {
+    getRoom(req.params.id, function () {
       if (err) return res.jsonp(500, err);
-      var room;
-      try { room = JSON.parse(reply); }
-      catch(e) { return res.jsonp(500, { error: 'Malformed room data.'}); }
       res.jsonp(room);
     });
   });
@@ -194,8 +221,6 @@ app.get('/template/:file', function (req, res) {
 
 // Serve the front end
 app.get('/*?', function (req, res) {
-  console.log(req.user);
-  console.log(req.session);
   res.render('index', {
     layout: false
   });
@@ -223,10 +248,31 @@ chat.on('connection',
 var code = io.of('/code');
 code.on('connection',
   function (socket) {
+    // Client joins room
     socket.on('join', function (room) {
       socket.room = room;
       socket.join(room);
+      // Bump the stats
+      roomStat(room, 'viewers', 1, function (err, stats) {
+        if (err) return console.log("error bumping stats", err);
+        io
+          .of('/code')
+          .in(socket.room)
+          .emit('stat:change', stats);
+      });
     });
+    // Client disconnected
+    socket.on('disconnect', function () {
+      // Bump the stats
+      roomStat(socket.room, 'viewers', -1, function (err, stats) {
+        if (err) return console.log("error bumping stats", err);
+        io
+          .of('/code')
+          .in(socket.room)
+          .emit('stat:change', stats);
+      });
+    });
+    // Notify everybody else of code change
     socket.on('code:change', function (data) {
       socket
         .broadcast

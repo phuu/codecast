@@ -14,5 +14,11 @@
     Get codecasting&hellip;
   </a>
 
-  or watch <a href="/w/abc">room <strong>abc</strong></a>.
+  <div class="watchcode">
+    Know a code?
+    <form ng-submit="watch(watchcode)">
+      <input type="text" ng-model="watchcode">
+      <button class="btn" type="submit"><i class="icon-eye"></i> Watch</button>
+    </form>
+  <div>
 </main>
