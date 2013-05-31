@@ -1,7 +1,7 @@
 (function () {
 
   var app = angular.module('codecast', [
-    'ngResource', 'code', 'room', 'chat', 'ace', 'uid'
+    'ngResource', 'code', 'room', 'chat', 'ace', 'start'
   ]);
 
   /**
@@ -10,21 +10,16 @@
   app.config([
     '$routeProvider',
     '$locationProvider',
-    'uidProvider',
-  function ($routeP, $locationP, uidProvider) {
-    // Grab the uid generator. Not sure why this is neccesary.
-    // TODO investigate
-    var uid = uidProvider.$get();
-
+  function ($routeP, $locationP) {
     // Use nice URLs, no nasty hashbangs
     $locationP.html5Mode(true);
 
     // Routing
     $routeP
       .when('/start', {
-        redirectTo: function (params, path, search) {
-          return '/c/' + uid.generate();
-        }
+        controller: 'StartCtrl',
+        auth: true,
+        template: 'Loading...'
       })
       .when('/w/:room', {
         controller: 'RoomCtrl',
@@ -32,6 +27,7 @@
       })
       .when('/c/:room', {
         controller: 'CodeCtrl',
+        auth: true,
         templateUrl: '/template/code.html'
       })
       .otherwise({
@@ -46,7 +42,7 @@
     '$resource',
   function ($resource) {
     return $resource('/api/user');
-  }])
+  }]);
 
   /**
    * Authentication Controller
@@ -55,11 +51,14 @@
     '$scope',
     'User',
     '$location',
-  function ($scope, User, $location) {
-    $scope.user = User.get(function (user) {
-      if (!$scope.user.access_token) {
-        $location.path('/').replace();
-      }
+    '$route',
+  function ($scope, User, $location, $route) {
+    $scope.$on('$routeChangeSuccess', function (event, current) {
+      $scope.user = User.get(function (user) {
+        if (current.auth && !$scope.user.access_token) {
+          $location.path('/').replace();
+        }
+      });
     });
   }]);
 
