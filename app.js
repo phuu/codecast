@@ -11,8 +11,7 @@ var passport       = require('passport'),
 
 var io             = require('socket.io');
 
-var redis          = require("redis"),
-    redisClient    = redis.createClient(),
+var redis          = require("redis-url"),
     RedisStore     = require('connect-redis')(express);
 
 var redismemoriser = require('./lib/redismemoriser'),
@@ -45,6 +44,10 @@ var config = {
     secret: configFile.SESSION_SECRET ||
             process.env.SESSION_SECRET ||
             'keyboard fricking cat'
+  },
+  db: {
+    redis: configFile.REDIS_URL ||
+           process.env.REDIS_URL
   }
 };
 
@@ -80,6 +83,7 @@ passport.use(new GitHubStrategy({
 
 // Database
 
+var redisClient = redis.connect(config.db.redis);
 redisClient.on("error", function (err) {
   console.log("Error " + err);
 });
