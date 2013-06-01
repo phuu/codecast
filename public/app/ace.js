@@ -110,7 +110,11 @@ angular.module('ace', [])
         });
         scope.$watch('source', function(source) {
           if( first ) { return (first = false); }
-          if (!updating) { editor.getSession().setValue(source || ''); }
+          if (!updating) {
+            var scrollTop = editor.getSession().getScrollTop();
+            editor.getSession().setValue(source || '');
+            editor.getSession().setScrollTop(scrollTop);
+          }
           scope.onChange();
           if( !$rootScope.$$phase ) scope.$apply();
           updating = false;
