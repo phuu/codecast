@@ -14,9 +14,6 @@ var io             = require('socket.io');
 var redis          = require('redis-url'),
     RedisStore     = require('connect-redis')(express);
 
-var redismemoriser = require('./lib/redismemoriser'),
-    uid            = require('./lib/uid')(Object.create(redismemoriser));
-
 /**
  * Configuration
  * See: http://s.phuu.net/12PFa6J
@@ -89,6 +86,11 @@ var redisClient = redis.connect(config.db.redis);
 redisClient.on("error", function (err) {
   console.log("Error " + err);
 });
+
+var redismemoriser = Object.create(require('./lib/redismemoriser')).init({
+      client: redisClient
+    }),
+    uid = require('./lib/uid')(redismemoriser);
 
 // Express
 
