@@ -165,6 +165,7 @@ var roomStat = function (id, stat, amount, cb) {
     // -1 to compensate for the coder
     if (typeof room.stats[stat] === "undefined") room.stats[stat] = -1;
     room.stats[stat] += amount;
+    if (room.stats[stat] < 0) room.stats[stat] = 0;
     console.log('saving', room);
     setRoom(id, room);
     cb(null, room.stats);
