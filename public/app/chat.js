@@ -3,8 +3,8 @@
   var chate = angular.module('chat', ['io']);
 
   chate.controller('ChatCtrl', [
-    '$scope', 'io', '$routeParams',
-  function ($scope, io, $routeParams) {
+    '$scope', 'io', '$routeParams', '$window',
+  function ($scope, io, $routeParams, $window) {
 
     $scope.chat = {
       messages: [],
@@ -14,6 +14,10 @@
     };
 
     $scope.room = $routeParams.room;
+
+    $scope.getShareUrl = function () {
+      return $window.location.origin + '/w/' + $scope.room;
+    };
 
     var socket = io.connect('/chat');
     socket.emit('join', $routeParams.room);
