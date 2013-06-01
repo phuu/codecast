@@ -31,5 +31,6 @@
     "tap": "~0.4.3",
     "async": "~0.2.8",
     "underscore": "~1.4.4"
-  }
+  },
+  "subdomain": "codecast"
 }
