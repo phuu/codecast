@@ -11,7 +11,7 @@ var passport       = require('passport'),
 
 var io             = require('socket.io');
 
-var redis          = require("redis-url"),
+var redis          = require('redis-url'),
     RedisStore     = require('connect-redis')(express);
 
 var redismemoriser = require('./lib/redismemoriser'),
@@ -50,6 +50,8 @@ var config = {
            process.env.REDIS_URL
   }
 };
+
+console.log(config);
 
 /**
  * Passport express
