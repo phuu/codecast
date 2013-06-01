@@ -269,7 +269,16 @@ code.on('connection',
       socket.join(room);
       // Bump the stats
       roomStat(room, 'viewers', 1, function (err, stats) {
-        if (err) return console.log("error bumping stats", err);
+        if (err) {
+          stats = {
+            viewers: 0
+          };
+          setRoom(room, {
+            id: room,
+            stats: stats
+          });
+          console.log("error bumping stats", err);
+        }
         io
           .of('/code')
           .in(socket.room)
