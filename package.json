@@ -2,7 +2,7 @@
   "name": "codecast",
   "version": "0.0.1",
   "engines": {
-    "node": "0.10.x",
+    "node": "0.8.x",
     "npm": "1.2.x"
   },
   "scripts": {
@@ -23,7 +23,6 @@
     "socket.io": "~0.9.14",
     "redis": "~0.8.3",
     "connect-redis": "~1.4.5",
-    "hiredis": "~0.1.15",
     "microtime": "~0.3.3",
     "redis-url": "~0.1.0"
   },
