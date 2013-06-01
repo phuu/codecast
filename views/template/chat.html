@@ -13,6 +13,13 @@
         <input ng-model="message"><button ng-click="send()">&rarr;</button>
       </form>
     </div>
+    <div class="chat-input" ng-show="!user.profile">
+      <a class="btn"
+         href="/auth/github"
+         target="_self">
+        <i class="icon-github"></i> Sign in with Github to chat
+      </a>
+    </div>
   </div>
 
   <div class="viewers"><i class="icon-eye"></i> {{ stats.viewers }}</div>
