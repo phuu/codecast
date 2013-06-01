@@ -1,12 +1,12 @@
 {
   "name": "codecast",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
     "node": "0.8.x",
     "npm": "1.2.x"
   },
   "scripts": {
-    "start": "node app",
+    "start": "node app.js",
     "test": "tap ./test"
   },
   "dependencies": {
