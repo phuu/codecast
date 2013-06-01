@@ -158,7 +158,6 @@ var setRoom = function (id, data, cb) {
 
 var roomStat = function (id, stat, amount, cb) {
   getRoom(id, function (err, room) {
-    console.log.apply(console, [].slice.call(arguments));
     if (err) return cb(err);
     if (!room) return cb(new Error("No such room."), null);
     if (!room.stats) room.stats = {};
