@@ -2,6 +2,8 @@
 
 var pkg            = require('./package.json'),
     express        = require('express'),
+    _              = require('underscore'),
+    async          = require('async'),
     http           = require('http'),
     fs             = require('fs'),
     path           = require('path');
@@ -152,38 +154,85 @@ app.configure('production', function () {
  * Utils
  */
 
+/**
+ * Redis
+ */
+
 var rk = function () {
   return [].slice.call(arguments).join(':');
 };
 
-var getRoom = function (id, cb) {
-  return redisClient.get(rk('room', id), function (err, reply) {
+var getThing = function (thing, id, cb) {
+  redisClient.keys(rk(thing, id, '*'), function (err, fullKeys) {
     if (err) return cb(err);
-    if (!reply) return cb(null, null);
-    var room;
-    try { room = JSON.parse(reply); }
-    catch (e) { return cb(new Error('Malformed room data.')); }
-    return cb(null, room);
+    if (!fullKeys) return cb(null, null);
+    // Grab only the last part of the key
+    var keys = fullKeys.map(function (fullKey) {
+      return _.last(fullKey.split(':'));
+    });
+    // Iterate over them and grab some data
+    async.map(keys, function (key, done) {
+      redisClient.get(rk(thing, id, key), done);
+    }, function (err, values) {
+      if (err) return cb(err);
+      cb (null, _.object(keys, values));
+    });
   });
 };
 
-var setRoom = function (id, data, cb) {
-  return redisClient.set(rk('room', id), JSON.stringify(data));
+var setThing = function (thing, id, data, cb) {
+  async.each(Object.keys(data), function (key, done) {
+    redisClient.set(rk(thing, id, key), data[key], done);
+  }, cb);
 };
 
-var roomStat = function (id, stat, amount, cb) {
-  getRoom(id, function (err, room) {
+/**
+ * Room
+ */
+
+var getRoom = getThing.bind(null, 'room');
+
+var setRoom = setThing.bind(null, 'room');
+
+var incrRoom = function (id, key, amount, cb) {
+  redisClient.incrby(rk('room', id, key), amount, function (err, reply) {
+    console.log('incrRoom', err, reply);
     if (err) return cb(err);
-    if (!room) return cb(new Error("No such room."), null);
-    if (!room.stats) room.stats = {};
-    // -1 to compensate for the coder
-    if (typeof room.stats[stat] === "undefined") room.stats[stat] = -1;
-    room.stats[stat] += amount;
-    if (room.stats[stat] < 0) room.stats[stat] = 0;
-    console.log('saving', room);
-    setRoom(id, room);
-    cb(null, room.stats);
+    getRoom(id, cb);
   });
+};
+
+/**
+ * Code
+ */
+
+var getCode = getThing.bind(null, 'code');
+
+var setCode = setThing.bind(null, 'code');
+
+/**
+ * Chat
+ */
+
+var addChat = function (id, data, cb) {
+  redisClient.rpush(rk('chat', id), JSON.stringify(data), cb);
+};
+
+var getChat = function (id, data, cb) {
+  redisClient.get(rk('chat', id), function (err, rawMessages) {
+    if (err) return cb(err);
+    var messages = rawMessages.map(JSON.parse.bind(JSON));
+    cb(null, messages);
+  });
+};
+
+/**
+ * Auth
+ */
+
+var authenticate = function (req, res, next) {
+  if (req.user) return next();
+  res.jsonp(401, { error: 'Not authorized.' });
 };
 
 /**
@@ -207,12 +256,14 @@ app.get('/api/user',
   });
 
 app.post('/api/room',
+  // authenticate,
   function (req, res) {
     uid.generate(4, function (err, id) {
       if (err) return res.jsonp(500, err);
       var data = {
         id: id,
-        stats: {}
+        owner: req.user.id,
+        viewers: -1
       };
       res.jsonp(data);
       setRoom(id, data);
@@ -221,8 +272,9 @@ app.post('/api/room',
 
 app.get('/api/room/:id',
   function (req, res) {
-    getRoom(req.params.id, function () {
+    getRoom(req.params.id, function (err, room) {
       if (err) return res.jsonp(500, err);
+      if (!room) return res.jsonp(404);
       res.jsonp(room);
     });
   });
@@ -245,20 +297,29 @@ app.get('/*?', function (req, res) {
  * Realtime
  */
 
-var chat = io.of('/chat');
-chat.on('connection',
-  function (socket) {
-    socket.on('join', function (room) {
-      socket.room = room;
-      socket.join(room);
-    });
-    socket.on('chat:msg', function (data) {
-      socket
-        .broadcast
-        .to(socket.room)
-        .emit('chat:msg', data);
-    });
-  });
+// var chat = io.of('/chat');
+// chat.on('connection',
+//   function (socket) {
+//     socket.on('join', function (room) {
+//       socket.room = room;
+//       socket.join(room);
+//       getChat(socket.room, function (err, messages) {
+//         socket.emit('chat:msgs', messages);
+//       });
+//     });
+//     socket.on('chat:msg', function (data) {
+//       addChat(socket.room, data);
+//       socket
+//         .broadcast
+//         .to(socket.room)
+//         .emit('chat:msg', data);
+//     });
+//   });
+
+      //   io
+      //     .of('/code')
+      //     .in(socket.room)
+      //     .emit('stat:change', stats);
 
 var code = io.of('/code');
 code.on('connection',
@@ -267,41 +328,44 @@ code.on('connection',
     socket.on('join', function (room) {
       socket.room = room;
       socket.join(room);
-      // Bump the stats
-      roomStat(room, 'viewers', 1, function (err, stats) {
-        if (err) {
-          stats = {
-            viewers: 0
-          };
-          setRoom(room, {
-            id: room,
-            stats: stats
-          });
-          console.log("error bumping stats", err);
-        }
-        io
-          .of('/code')
-          .in(socket.room)
-          .emit('stat:change', stats);
-      });
-    });
-    // Client disconnected
-    socket.on('disconnect', function () {
-      // Bump the stats
-      roomStat(socket.room, 'viewers', -1, function (err, stats) {
-        if (err) return console.log("error bumping stats", err);
-        io
-          .of('/code')
-          .in(socket.room)
-          .emit('stat:change', stats);
+      // Retrieve the code for this room
+      getCode(socket.room, function (err, data) {
+        if (err) return console.log(err);
+        socket.emit('code:change', data);
       });
     });
     // Notify everybody else of code change
     socket.on('code:change', function (data) {
+      setCode(socket.room, data);
       socket
         .broadcast
         .to(socket.room)
         .emit('code:change', data);
+    });
+  });
+
+var room = io.of('/room');
+room.on('connection',
+  function (socket) {
+    // Client joins room
+    socket.on('join', function (room) {
+      socket.room = room;
+      socket.join(room);
+      incrRoom(socket.room, 'viewers', 1, function (err, room) {
+        if (err) return;
+        io.of('/room')
+          .in(socket.room)
+          .emit('room:change', room);
+      });
+    });
+    // Client disconnected
+    socket.on('disconnect', function () {
+      incrRoom(socket.room, 'viewers', -1, function (err, room) {
+        if (err) return;
+        io.of('/room')
+          .in(socket.room)
+          .emit('room:change', room);
+      });
     });
   });
 

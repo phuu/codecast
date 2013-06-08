@@ -7,7 +7,7 @@
   function ($scope, io, $routeParams) {
     $scope.code = '';
     $scope.mode = 'markdown';
-    $scope.room = $routeParams.room;
+
     var socket = io.connect('/code');
     socket.emit('join', $routeParams.room);
     $scope.change = function (value) {
@@ -16,11 +16,6 @@
         mode: $scope.mode
       });
     };
-    socket.on('stat:change', function (stats) {
-      $scope.$apply(function () {
-        $scope.stats = stats;
-      });
-    });
   }]);
 
 }());

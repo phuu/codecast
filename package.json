@@ -24,7 +24,9 @@
     "redis": "~0.8.3",
     "connect-redis": "~1.4.5",
     "microtime": "~0.3.3",
-    "redis-url": "~0.1.0"
+    "redis-url": "~0.1.0",
+    "async": "~0.2.9",
+    "underscore": "~1.4.4"
   },
   "main": "app.js",
   "devDependencies": {
