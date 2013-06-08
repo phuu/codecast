@@ -62,7 +62,7 @@ body {
 }
 
 a { color: #444; }
-a:hover { color: #333; }
+a:hover { color: #214583; }
 .bare { text-decoration: none; }
 .bare:hover { text-decoration: underline; }
 
@@ -242,7 +242,7 @@ div.editor-mode {
 }
 .share input:focus {
   outline: none;
-  border: 1px solid #00B7FF;
+  border: 1px solid #214583;
 }
 
 .chat {
@@ -297,4 +297,30 @@ div.editor-mode {
 }
 .chat-input button:hover {
   background: rgba(0,0,0,.2);
+}
+
+/* Feedback button */
+
+.feedback {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background: #214583;
+  color: white;
+  color: rgba(255,255,255,0.7);
+  padding: 0.444em 0.667em;
+  border-top-right-radius: 4px;
+  text-decoration: none;
+  z-index: 1000;
+  font-size: 1em;
+  -webkit-transition: padding 0.1s ease-out;
+  -moz-transition: padding 0.1s ease-out;
+  -o-transition: padding 0.1s ease-out;
+  -ms-transition: padding 0.1s ease-out;
+  transition: padding 0.1s ease-out;
+}
+
+.feedback:hover {
+  color: white;
+  padding: 0.444em 0.667em 0.5em;
 }
