@@ -62,7 +62,7 @@ body {
 }
 
 a { color: #444; }
-a:hover { color: #214583; }
+a:hover { color: #0087AA; }
 .bare { text-decoration: none; }
 .bare:hover { text-decoration: underline; }
 
@@ -74,7 +74,7 @@ a:hover { color: #214583; }
   margin-bottom: 0;
   font-size: 1em;
   line-height: 1.5;
-  color: #333333;
+  color: #0087AA;
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
@@ -92,7 +92,7 @@ a:hover { color: #214583; }
 .btn.active,
 .btn.disabled,
 .btn[disabled] {
-  color: #333333;
+  color: #007799;
   background-color: #e6e6e6;
 }
 
@@ -107,7 +107,7 @@ a:hover { color: #214583; }
 
 .btn:hover,
 .btn:focus {
-  color: #333333;
+  color: #007799;
   text-decoration: none;
 }
 
@@ -188,7 +188,7 @@ h1 a {
 
 .landing .watchcode input:focus {
   outline: none;
-  border: 1px solid #00B7FF;
+  border: 1px solid #0087AA;
 }
 
 .wrapper.code {
@@ -224,6 +224,7 @@ div.editor-mode {
   width: 6%;
   font: 12px/1.5 "Open Sans", sans-serif;
   text-align: right;
+  color: #007799;
 }
 
 .share {
@@ -242,7 +243,7 @@ div.editor-mode {
 }
 .share input:focus {
   outline: none;
-  border: 1px solid #214583;
+  border: 1px solid #0087AA;
 }
 
 .chat {
@@ -292,11 +293,12 @@ div.editor-mode {
 
 .chat-input button {
   width: 20%;
-  background: rgba(0,0,0,.1);
+  background: #0087AA;
   cursor: pointer;
 }
 .chat-input button:hover {
-  background: rgba(0,0,0,.2);
+  background: #007799;
+  text-indent: 0.298em;
 }
 
 /* Feedback button */
@@ -305,22 +307,16 @@ div.editor-mode {
   position: fixed;
   bottom: 0;
   left: 0;
-  background: #214583;
-  color: white;
-  color: rgba(255,255,255,0.7);
+  background: #0087AA;
+  color: black;
+  color: rgba(0,0,0,0.7);
   padding: 0.444em 0.667em;
   border-top-right-radius: 4px;
   text-decoration: none;
   z-index: 1000;
   font-size: 1em;
-  -webkit-transition: padding 0.1s ease-out;
-  -moz-transition: padding 0.1s ease-out;
-  -o-transition: padding 0.1s ease-out;
-  -ms-transition: padding 0.1s ease-out;
-  transition: padding 0.1s ease-out;
 }
 
 .feedback:hover {
-  color: white;
-  padding: 0.444em 0.667em 0.5em;
+  color: black;
 }
