@@ -41,6 +41,7 @@
     // Send a chat message
     $scope.send = function () {
       if (!$scope.user.profile) return;
+      if (!$scope.message.trim()) return;
       var msg = {
         body: $scope.message,
         author: $scope.user.profile.username

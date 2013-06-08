@@ -311,8 +311,15 @@ chat.on('connection',
         socket.emit('chat:msgs', messages);
       });
     });
-    socket.on('chat:msg', function (data) {
-      console.log('adding chat', data);
+    socket.on('chat:msg', function (rawData) {
+      // Clean up the chat data
+      var data = Object.keys(rawData).reduce(function (data, key) {
+        if (key !== 'body' && key !== 'author') return data;
+        data[key] = (''+rawData[key]).trim();
+        return data;
+      }, {});
+      if (!(data.body && data.author)) return;
+      // Persist it and emit
       addChat(socket.room, data);
       socket
         .broadcast
