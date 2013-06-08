@@ -57,6 +57,16 @@
   }]);
 
   /**
+   * Filters
+   */
+  app.filter('positive', function () {
+    return function (str) {
+      var num = parseFloat(str);
+      return Math.max(num, 0);
+    };
+  });
+
+  /**
    * Authentication Controller
    */
   app.controller('AuthCtrl', [

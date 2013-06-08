@@ -22,7 +22,7 @@
     </div>
   </div>
 
-  <div class="viewers"><i class="icon-eye"></i> {{ room.viewers }}</div>
+  <div class="viewers"><i class="icon-eye"></i> {{ room.viewers | positive }}</div>
 
   <div class="share">
     Share: <input onClick="this.select();" value="{{ getShareUrl() }}">

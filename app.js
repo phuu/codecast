@@ -175,15 +175,18 @@ var getThing = function (thing, id, cb) {
       redisClient.get(rk(thing, id, key), done);
     }, function (err, values) {
       if (err) return cb(err);
-      cb (null, _.object(keys, values));
+      cb(null, _.object(keys, values));
     });
   });
 };
 
 var setThing = function (thing, id, data, cb) {
-  async.each(Object.keys(data), function (key, done) {
+  async.map(Object.keys(data), function (key, done) {
     redisClient.set(rk(thing, id, key), data[key], done);
-  }, cb);
+  }, function (err) {
+    if (err) return cb(err);
+    getThing(thing, id, cb);
+  });
 };
 
 /**
@@ -196,7 +199,6 @@ var setRoom = setThing.bind(null, 'room');
 
 var incrRoom = function (id, key, amount, cb) {
   redisClient.incrby(rk('room', id, key), amount, function (err, reply) {
-    console.log('incrRoom', err, reply);
     if (err) return cb(err);
     getRoom(id, cb);
   });
@@ -266,8 +268,10 @@ app.post('/api/room',
         owner: req.user.profile.id,
         viewers: -1
       };
-      res.jsonp(data);
-      setRoom(id, data);
+      setRoom(id, data, function (err, room) {
+        if (err) return res.jsonp(500, err);
+        res.jsonp(room);
+      });
     });
   });
 
@@ -358,7 +362,10 @@ room.on('connection',
     socket.on('join', function (room) {
       socket.room = room;
       socket.join(room);
-      incrRoom(socket.room, 'viewers', 1, function (err, room) {
+      // Pull out the currently connected viewers
+      var viewers = Object.keys(io.of('/room').in(socket.room).sockets).length;
+      // Save the number of viewers and send it on back
+      setRoom(socket.room, { viewers : viewers }, function (err, room) {
         if (err) return;
         io.of('/room')
           .in(socket.room)
