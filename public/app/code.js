@@ -16,6 +16,14 @@
         mode: $scope.mode
       });
     };
+
+    // Listen for code persisted from a previous session
+    socket.on('code:change', function (data) {
+      $scope.$apply(function () {
+        $scope.code = data.code || $scope.code;
+        $scope.mode = data.mode || $scope.mode;
+      });
+    });
   }]);
 
 }());

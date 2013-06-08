@@ -218,9 +218,10 @@ var addChat = function (id, data, cb) {
   redisClient.rpush(rk('chat', id), JSON.stringify(data), cb);
 };
 
-var getChat = function (id, data, cb) {
-  redisClient.get(rk('chat', id), function (err, rawMessages) {
+var getChat = function (id, cb) {
+  redisClient.lrange(rk('chat', id), 0, -1, function (err, rawMessages) {
     if (err) return cb(err);
+    if (!rawMessages) return cb();
     var messages = rawMessages.map(JSON.parse.bind(JSON));
     cb(null, messages);
   });
@@ -256,13 +257,13 @@ app.get('/api/user',
   });
 
 app.post('/api/room',
-  // authenticate,
+  authenticate,
   function (req, res) {
     uid.generate(4, function (err, id) {
       if (err) return res.jsonp(500, err);
       var data = {
         id: id,
-        owner: req.user.id,
+        owner: req.user.profile.id,
         viewers: -1
       };
       res.jsonp(data);
@@ -297,29 +298,28 @@ app.get('/*?', function (req, res) {
  * Realtime
  */
 
-// var chat = io.of('/chat');
-// chat.on('connection',
-//   function (socket) {
-//     socket.on('join', function (room) {
-//       socket.room = room;
-//       socket.join(room);
-//       getChat(socket.room, function (err, messages) {
-//         socket.emit('chat:msgs', messages);
-//       });
-//     });
-//     socket.on('chat:msg', function (data) {
-//       addChat(socket.room, data);
-//       socket
-//         .broadcast
-//         .to(socket.room)
-//         .emit('chat:msg', data);
-//     });
-//   });
-
-      //   io
-      //     .of('/code')
-      //     .in(socket.room)
-      //     .emit('stat:change', stats);
+var chat = io.of('/chat');
+chat.on('connection',
+  function (socket) {
+    socket.on('join', function (room) {
+      socket.room = room;
+      socket.join(room);
+      getChat(socket.room, function (err, messages) {
+        console.log('chat', messages);
+        if (err) return console.log(err);
+        if (!messages) return;
+        socket.emit('chat:msgs', messages);
+      });
+    });
+    socket.on('chat:msg', function (data) {
+      console.log('adding chat', data);
+      addChat(socket.room, data);
+      socket
+        .broadcast
+        .to(socket.room)
+        .emit('chat:msg', data);
+    });
+  });
 
 var code = io.of('/code');
 code.on('connection',
