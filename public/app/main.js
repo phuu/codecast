@@ -76,8 +76,7 @@
         authoriseRoom = function () {
           if (current.room && current.auth &&
               ''+$scope.user.profile.id !== $scope.room.owner) {
-            alert('Not authorised, mate.');
-            $location.path('/').replace();
+            $location.path('/start').replace();
           }
         };
       };
