@@ -1,7 +1,7 @@
 (function () {
 
   var app = angular.module('codecast', [
-    'ngResource', 'code', 'watch', 'chat', 'ace', 'start', 'io'
+    'ngResource', 'ace', 'io', 'code', 'watch', 'chat', 'start',
   ]);
 
   /**

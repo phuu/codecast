@@ -1,18 +1,20 @@
 <main class="wrapper landing">
   <h2>Broadcast your code to teach or<br>collaborate on a problem.</h2>
 
-  <a class="btn btn-large"
-     href="/auth/github"
-     ng-hide="user.profile"
-     target="_self">
-    <i class="icon-github"></i> Sign in with Github
-  </a>
+  <div class="call-to-action">
+    <a class="btn btn-large"
+       href="/auth/github"
+       ng-hide="user.profile"
+       target="_self">
+      <i class="icon-github"></i> Sign in with Github
+    </a>
 
-  <a class="btn btn-large"
-     href="/start"
-     ng-show="user.profile">
-    Get codecasting&hellip;
-  </a>
+    <a class="btn btn-large"
+       href="/start"
+       ng-show="user.profile">
+      Get codecasting&hellip;
+    </a>
+  </div>
 
   <div class="watchcode">
     Know a code?

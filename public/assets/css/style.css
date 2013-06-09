@@ -189,6 +189,10 @@ h1 a:hover {
   margin-bottom: 0.444em;
 }
 
+.landing .call-to-action {
+  text-align: center;
+}
+
 .landing .watchcode {
   margin: 2.5em;
 }
