@@ -174,6 +174,7 @@ var getThing = function (thing, id, cb) {
     async.map(keys, function (key, done) {
       redisClient.get(rk(thing, id, key), done);
     }, function (err, values) {
+      if (!cb) return;
       if (err) return cb(err);
       cb(null, _.object(keys, values));
     });

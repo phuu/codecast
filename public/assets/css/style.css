@@ -279,6 +279,7 @@ div.editor-mode {
   border: none;
   background: #0087AA;
   color: white;
+  display: block;
 }
 .chat .btn:hover {
   background: #007799;
