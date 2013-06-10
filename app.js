@@ -1,9 +1,11 @@
 // codecast
 
-require('nodetime').profile({
-  accountKey: 'fcd6df5a6b9a7723f77213bc88d421c0399fdb31',
-  appName: 'Codecast'
-});
+if (process.env.NODE_ENV === 'production') {
+  require('nodetime').profile({
+    accountKey: 'fcd6df5a6b9a7723f77213bc88d421c0399fdb31',
+    appName: 'Codecast'
+  });
+}
 
 var pkg            = require('./package.json'),
     express        = require('express'),
