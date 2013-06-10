@@ -26,7 +26,8 @@
     "microtime": "~0.3.3",
     "redis-url": "~0.1.0",
     "async": "~0.2.9",
-    "underscore": "~1.4.4"
+    "underscore": "~1.4.4",
+    "nodetime": "~0.8.13"
   },
   "main": "app.js",
   "devDependencies": {
